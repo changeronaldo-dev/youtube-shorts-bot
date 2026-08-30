@@ -19,11 +19,36 @@ jobs:
         run: |
           pip install google-auth-oauthlib
 
-      - name: Generate Auth URL and Instructions
+      - name: Generate Auth URL
+        env:
+          CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
         run: |
-          echo "===================================================="
-          echo "USE YOUR NEW CLIENT ID AND CLIENT SECRET TO AUTHENTICATE."
-          echo "Go to Google Cloud Console > Credentials, create an OAuth client ID (App type: Desktop app),"
-          echo "and copy your Client ID and Client Secret into GitHub Secrets as YOUTUBE_CLIENT_ID and YOUTUBE_CLIENT_SECRET."
-          echo "===================================================="
-          
+          python -c "
+          import os
+          from google_auth_oauthlib.flow import InstalledAppFlow
+
+          client_id = os.environ.get('CLIENT_ID')
+          client_secret = os.environ.get('CLIENT_SECRET')
+
+          client_config = {
+              'installed': {
+                  'client_id': client_id,
+                  'client_secret': client_secret,
+                  'auth_uri': 'https://accounts.google.com/o/oauth2/auth',
+                  'token_uri': 'https://oauth2.googleapis.com/token',
+                  'redirect_uris': ['urn:ietf:wg:oauth:2.0:oob', 'http://localhost']
+              }
+          }
+
+          flow = InstalledAppFlow.from_client_config(
+              client_config,
+              scopes=['https://www.googleapis.com/auth/youtube.upload']
+          )
+          flow.redirect_uri = 'urn:ietf:wg:oauth:2.0:oob'
+          auth_url, _ = flow.authorization_url(prompt='consent', access_type='offline')
+          print('\n========================================')
+          print('COPY THIS URL AND OPEN IT IN YOUR BROWSER:')
+          print(auth_url)
+          print('========================================\n')
+          "
