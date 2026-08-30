@@ -1,0 +1,8 @@
+# Automated YouTube Shorts — Khana Kaba / Makkah
+requests>=2.32,<3
+numpy>=1.26
+pillow>=10.0
+moviepy>=2.1.1,<3          # v2 API (VideoClip(frame_function=…), with_effects, subclipped)
+google-api-python-client>=2.100
+google-auth>=2.23
+google-auth-httplib2>=0.2
