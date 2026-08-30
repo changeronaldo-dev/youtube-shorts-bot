@@ -1,0 +1,29 @@
+name: Get YouTube Refresh Token
+
+on:
+  workflow_dispatch:
+
+jobs:
+  get-token:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Google Client Library
+        run: |
+          pip install google-auth-oauthlib
+
+      - name: Generate Auth URL and Instructions
+        run: |
+          echo "===================================================="
+          echo "USE YOUR NEW CLIENT ID AND CLIENT SECRET TO AUTHENTICATE."
+          echo "Go to Google Cloud Console > Credentials, create an OAuth client ID (App type: Desktop app),"
+          echo "and copy your Client ID and Client Secret into GitHub Secrets as YOUTUBE_CLIENT_ID and YOUTUBE_CLIENT_SECRET."
+          echo "===================================================="
+          
